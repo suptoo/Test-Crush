@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { BookOpen, LogOut, Search, Trophy, TrendingUp, Brain, Wrench } from "lucide-react";
+import { BookOpen, LogOut, Search, Trophy, TrendingUp, Brain, Wrench, Sparkles } from "lucide-react";
 import { formatDate, calculatePercentage } from "@/lib/utils";
 
 interface AttemptWithQuiz extends Attempt {
@@ -214,7 +214,26 @@ export default function StudentDashboard() {
         </div>
 
         {/* Quick Access Tools */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 sm:mb-8">
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20"
+            onClick={() => router.push('/student/ai-assistant')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg mb-1">TestCrush AI</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Multimodal AI assistant
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card 
             className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105 border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20"
             onClick={() => router.push('/student/focus')}

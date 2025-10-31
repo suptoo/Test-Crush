@@ -48,6 +48,15 @@ export default function StudentToolsPage() {
       path: '/student/focus',
       category: 'focus'
     },
+    {
+      id: 'ai-assistant',
+      name: 'TestCrush AI',
+      description: 'Multimodal AI assistant with intelligent model routing',
+      icon: Sparkles,
+      color: 'purple',
+      path: '/student/ai-assistant',
+      category: 'focus'
+    },
     
     // Productivity Tools
     {
