@@ -240,42 +240,42 @@ export default function TakeQuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
-        <Card className="mb-6 border-purple-200 dark:border-purple-800">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">{quiz?.title}</h1>
-                <p className="text-gray-600 dark:text-gray-400">
+        <Card className="mb-4 sm:mb-6 border-purple-200 dark:border-purple-800">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+              <div className="flex-1">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">{quiz?.title}</h1>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                   {quiz?.description}
                 </p>
               </div>
               {timeLeft !== null && (
                 <div
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg w-fit ${
                     timeLeft < 60
                       ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
                       : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
                   }`}
                 >
-                  <Clock className="w-5 h-5" />
-                  <span className="font-mono text-lg font-bold">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="font-mono text-base sm:text-lg font-bold">
                     {formatTime(timeLeft)}
                   </span>
                 </div>
               )}
             </div>
 
-            <div className="mt-4 flex items-center gap-4 text-sm">
+            <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
               <span className="flex items-center gap-1">
-                <CheckCircle className="w-4 h-4 text-green-600" />
+                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
                 {answeredCount} / {totalQuestions} answered
               </span>
               {answeredCount < totalQuestions && (
                 <span className="flex items-center gap-1 text-orange-600">
-                  <AlertCircle className="w-4 h-4" />
+                  <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                   {totalQuestions - answeredCount} remaining
                 </span>
               )}
@@ -284,22 +284,22 @@ export default function TakeQuizPage() {
         </Card>
 
         {/* Questions */}
-        <div className="space-y-6 mb-6">
+        <div className="space-y-4 sm:space-y-6 mb-4 sm:mb-6">
           {questions.map((question, index) => (
             <Card key={question.id}>
-              <CardHeader>
-                <CardTitle className="text-lg">
+              <CardHeader className="pb-3 sm:pb-6">
+                <CardTitle className="text-base sm:text-lg">
                   Question {index + 1} of {totalQuestions}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-lg mb-4">{question.question_text}</p>
+              <CardContent className="pt-0">
+                <p className="text-base sm:text-lg mb-3 sm:mb-4">{question.question_text}</p>
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {question.choices.map((choice) => (
                     <label
                       key={choice.id}
-                      className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition ${
+                      className={`flex items-center p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition ${
                         selectedAnswers[question.id] === choice.id
                           ? "border-purple-600 bg-purple-50 dark:bg-purple-900/20"
                           : "border-gray-200 dark:border-gray-700 hover:border-purple-300"
@@ -312,9 +312,9 @@ export default function TakeQuizPage() {
                         onChange={() =>
                           handleSelectAnswer(question.id, choice.id)
                         }
-                        className="w-4 h-4 text-purple-600 mr-3"
+                        className="w-4 h-4 text-purple-600 mr-3 flex-shrink-0"
                       />
-                      <span className="flex-1">{choice.choice_text}</span>
+                      <span className="flex-1 text-sm sm:text-base">{choice.choice_text}</span>
                     </label>
                   ))}
                 </div>
@@ -325,11 +325,11 @@ export default function TakeQuizPage() {
 
         {/* Submit Button */}
         <Card>
-          <CardContent className="p-6">
-            <div className="flex justify-between items-center">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div>
-                <p className="font-medium">Ready to submit?</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-sm sm:text-base">Ready to submit?</p>
+                <p className="text-xs sm:text-sm text-gray-500">
                   Make sure you&apos;ve answered all questions before submitting.
                 </p>
               </div>
@@ -337,7 +337,7 @@ export default function TakeQuizPage() {
                 onClick={handleSubmit}
                 disabled={submitting}
                 size="lg"
-                className="min-w-[150px]"
+                className="w-full sm:w-auto sm:min-w-[150px]"
               >
                 {submitting ? "Submitting..." : "Submit Quiz"}
               </Button>

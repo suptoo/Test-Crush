@@ -18,8 +18,24 @@ QuizFlow is a modern, full-stack quiz platform built with **Next.js 14**, **Type
 - ✅ **Dark Mode** - Full dark/light theme support
 - ✅ **Responsive Design** - Mobile-friendly interface with TailwindCSS
 
+### 🤖 NEW: AI-Powered Features
+- ✨ **AI Quiz Assistant** - Generate quiz questions automatically using Vertex AI (Gemini)
+  - Natural language interface: "Create 5 math questions about trigonometry"
+  - Automatic question and answer generation
+  - Smart topic-based suggestions
+- ⌨️ **Virtual Math Keyboard** - Easy input of mathematical symbols and equations
+  - 100+ math symbols organized by category
+  - One-click LaTeX insertion
+  - Categories: Basic, Calculus, Trigonometry, Greek letters, and more
+- 📐 **LaTeX Math Rendering** - Beautiful mathematical equation display using KaTeX
+  - Inline math: `$x^2$`
+  - Display math: `$$\int x^2 dx$$`
+  - Full LaTeX support for complex equations
+
 ### 👨‍🏫 Teacher Features
 - Create unlimited quizzes with custom questions
+- **NEW: Generate questions with AI assistant**
+- **NEW: Use virtual math keyboard for equations**
 - Add multiple-choice options and mark correct answers
 - Generate unique secret keys for each quiz
 - Publish/unpublish quizzes
@@ -30,6 +46,7 @@ QuizFlow is a modern, full-stack quiz platform built with **Next.js 14**, **Type
 ### 👨‍🎓 Student Features
 - Join quizzes using secret keys
 - Take quizzes with optional timer
+- **NEW: View quizzes with properly rendered math equations**
 - Auto-save progress (resume incomplete quizzes)
 - View instant results with answer explanations
 - Track quiz history and performance trends
@@ -42,6 +59,8 @@ QuizFlow is a modern, full-stack quiz platform built with **Next.js 14**, **Type
 - **Frontend**: Next.js 14 (App Router), React 18, TypeScript
 - **Styling**: TailwindCSS, shadcn/ui components, Framer Motion
 - **Backend**: Supabase (PostgreSQL, Auth, Realtime)
+- **AI**: Google Vertex AI (Gemini Pro) for quiz generation
+- **Math Rendering**: KaTeX for LaTeX equation display
 - **Icons**: Lucide React
 - **Deployment**: Vercel (frontend), Supabase (backend)
 
@@ -94,14 +113,20 @@ npm install
 
 ### Step 4: Configure Environment Variables
 
-Edit the `.env.local` file in the project root:
+Create a `.env.local` file in the project root:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://bqgsuexdjiihtysyaysr.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_supabase_anon_key_here
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# Vertex AI for Quiz Generation (AI Assistant feature)
+NEXT_PUBLIC_VERTEX_AI_API_KEY=AIzaSyBb8RN6IWjC-SzpwHG_35IWbSjWJhdYtYE6trYtPy1WJE9JKXGA
 ```
 
-**⚠️ IMPORTANT:** Replace `your_actual_supabase_anon_key_here` with your actual Supabase anon key!
+**⚠️ IMPORTANT:** Replace the Supabase values with your actual credentials!
+
+**Note:** The Vertex AI key is already provided. For more details, see `ENV-SETUP.md`.
 
 ### Step 5: Setup Database
 
@@ -109,6 +134,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_supabase_anon_key_here
 2. Go to **SQL Editor**
 3. Copy the entire contents of `supabase-schema.sql`
 4. Paste and run the SQL script
+
+**For existing databases:** If you get an error about `access_type` column, run the `migration-add-quiz-columns.sql` file instead.
 
 This will create:
 - All database tables (profiles, quizzes, questions, choices, attempts, answers)
@@ -123,6 +150,16 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser!
+
+### 🤖 Step 7: Test AI Features (Optional)
+
+1. Create a teacher account and login
+2. Go to "Create Quiz"
+3. Click the "AI Assistant" button
+4. Try: "Create 3 math questions about algebra"
+5. Click the "Math Keyboard" button to test symbol insertion
+
+For detailed AI features guide, see `AI-FEATURES.md` and `QUICK-SETUP-AI.md`.
 
 ---
 

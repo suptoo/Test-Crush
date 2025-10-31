@@ -126,37 +126,37 @@ export default function ResultsPage() {
   const isPassing = percentage >= 60;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Score Card */}
-        <Card className="mb-8 border-t-4 border-t-purple-600">
-          <CardContent className="p-8 text-center">
+        <Card className="mb-6 sm:mb-8 border-t-4 border-t-purple-600">
+          <CardContent className="p-6 sm:p-8 text-center">
             <Trophy
-              className={`w-20 h-20 mx-auto mb-4 ${
+              className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 ${
                 isPassing ? "text-yellow-500" : "text-gray-400"
               }`}
             />
-            <h1 className="text-3xl font-bold mb-2">Quiz Completed!</h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">{quizTitle}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Quiz Completed!</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">{quizTitle}</p>
 
-            <div className="flex justify-center items-center gap-8 mb-6">
+            <div className="flex justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-6">
               <div>
-                <div className="text-5xl font-bold text-purple-600">
+                <div className="text-3xl sm:text-5xl font-bold text-purple-600">
                   {percentage}%
                 </div>
-                <div className="text-sm text-gray-500">Score</div>
+                <div className="text-xs sm:text-sm text-gray-500">Score</div>
               </div>
               <div className="h-12 w-px bg-gray-300"></div>
               <div>
-                <div className="text-3xl font-bold">
+                <div className="text-2xl sm:text-3xl font-bold">
                   {attempt.score} / {attempt.total_questions}
                 </div>
-                <div className="text-sm text-gray-500">Correct Answers</div>
+                <div className="text-xs sm:text-sm text-gray-500">Correct Answers</div>
               </div>
             </div>
 
             <div
-              className={`inline-block px-6 py-2 rounded-full text-lg font-semibold ${
+              className={`inline-block px-4 sm:px-6 py-2 rounded-full text-base sm:text-lg font-semibold ${
                 isPassing
                   ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
                   : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300"
@@ -165,15 +165,15 @@ export default function ResultsPage() {
               {isPassing ? "Passed!" : "Keep Practicing"}
             </div>
 
-            <p className="text-sm text-gray-500 mt-4">
+            <p className="text-xs sm:text-sm text-gray-500 mt-4">
               Completed on {formatDate(attempt.completed_at || attempt.started_at)}
             </p>
           </CardContent>
         </Card>
 
         {/* Answer Review */}
-        <div className="space-y-4 mb-8">
-          <h2 className="text-2xl font-bold">Answer Review</h2>
+        <div className="space-y-4 mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold">Answer Review</h2>
 
           {answerDetails.map((detail, index) => (
             <Card
@@ -184,20 +184,20 @@ export default function ResultsPage() {
                   : "border-l-red-500"
               }`}
             >
-              <CardHeader>
+              <CardHeader className="pb-3 sm:pb-6">
                 <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg">
+                  <CardTitle className="text-base sm:text-lg">
                     Question {index + 1}
                   </CardTitle>
                   {detail.is_correct ? (
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+                    <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
                   ) : (
-                    <XCircle className="w-6 h-6 text-red-600" />
+                    <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 flex-shrink-0" />
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="font-medium mb-4">{detail.question_text}</p>
+              <CardContent className="pt-0">
+                <p className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">{detail.question_text}</p>
 
                 <div className="space-y-2">
                   <div
@@ -207,16 +207,16 @@ export default function ResultsPage() {
                         : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
                     }`}
                   >
-                    <div className="text-sm font-medium mb-1">Your Answer:</div>
-                    <div>{detail.selected_choice}</div>
+                    <div className="text-xs sm:text-sm font-medium mb-1">Your Answer:</div>
+                    <div className="text-sm sm:text-base">{detail.selected_choice}</div>
                   </div>
 
                   {!detail.is_correct && (
                     <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                      <div className="text-sm font-medium mb-1">
+                      <div className="text-xs sm:text-sm font-medium mb-1">
                         Correct Answer:
                       </div>
-                      <div>{detail.correct_choice}</div>
+                      <div className="text-sm sm:text-base">{detail.correct_choice}</div>
                     </div>
                   )}
                 </div>
@@ -228,8 +228,8 @@ export default function ResultsPage() {
         {/* Actions */}
         <div className="flex justify-center gap-4">
           <Link href="/student/dashboard">
-            <Button size="lg">
-              <Home className="w-5 h-5 mr-2" />
+            <Button size="lg" className="w-full sm:w-auto">
+              <Home className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Back to Dashboard
             </Button>
           </Link>

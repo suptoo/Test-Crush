@@ -22,6 +22,8 @@ CREATE TABLE quizzes (
   teacher_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   duration_minutes INTEGER,
   is_published BOOLEAN DEFAULT FALSE,
+  access_type TEXT DEFAULT 'private' CHECK (access_type IN ('private', 'market_free', 'market_paid')),
+  price_cents INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

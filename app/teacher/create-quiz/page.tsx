@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase, type Question, type Choice } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Save, ArrowLeft } from "lucide-react";
+import { Plus, Trash2, Save, ArrowLeft, Sparkles, Keyboard } from "lucide-react";
 import { generateSecretKey } from "@/lib/utils";
 import Link from "next/link";
+import { AIAssistant } from "@/components/ai-assistant";
+import { MathKeyboard } from "@/components/math-keyboard";
+import { MathText } from "@/components/math-text";
+import { type GeneratedQuestion } from "@/lib/vertex-ai";
+import "katex/dist/katex.min.css";
+import { InlineMath } from "react-katex";
 
 interface QuestionData {
   question_text: string;
@@ -36,6 +42,16 @@ export default function CreateQuizPage() {
   ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // New state for AI and Math Keyboard
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showMathKeyboard, setShowMathKeyboard] = useState(false);
+  const [activeInputRef, setActiveInputRef] = useState<{
+    type: "question" | "choice";
+    questionIndex: number;
+    choiceIndex?: number;
+  } | null>(null);
+  const inputRefs = useRef<{ [key: string]: HTMLInputElement }>({});
 
   const addQuestion = () => {
     setQuestions([
@@ -94,6 +110,46 @@ export default function CreateQuizPage() {
     // Set selected choice to true
     newQuestions[questionIndex].choices[choiceIndex].is_correct = true;
     setQuestions(newQuestions);
+  };
+
+  // AI Assistant Handler
+  const handleAIQuestionsGenerated = (generatedQuestions: GeneratedQuestion[]) => {
+    // Add the generated questions to existing questions
+    const newQuestions = generatedQuestions.map((q) => ({
+      question_text: q.question_text,
+      choices: q.choices,
+    }));
+    setQuestions([...questions, ...newQuestions]);
+  };
+
+  // Math Keyboard Handler
+  const handleMathInsert = (latex: string) => {
+    if (!activeInputRef) return;
+
+    const { type, questionIndex, choiceIndex } = activeInputRef;
+    const newQuestions = [...questions];
+
+    if (type === "question") {
+      // Insert at cursor position or append
+      const currentText = newQuestions[questionIndex].question_text;
+      newQuestions[questionIndex].question_text = currentText + ` $${latex}$ `;
+    } else if (type === "choice" && choiceIndex !== undefined) {
+      const currentText =
+        newQuestions[questionIndex].choices[choiceIndex].choice_text;
+      newQuestions[questionIndex].choices[choiceIndex].choice_text =
+        currentText + ` $${latex}$ `;
+    }
+
+    setQuestions(newQuestions);
+  };
+
+  // Track which input is focused
+  const handleInputFocus = (
+    type: "question" | "choice",
+    questionIndex: number,
+    choiceIndex?: number
+  ) => {
+    setActiveInputRef({ type, questionIndex, choiceIndex });
   };
 
   const handleSaveQuiz = async () => {
@@ -207,17 +263,37 @@ export default function CreateQuizPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="mb-6">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="mb-6 flex justify-between items-center">
           <Link href="/teacher/dashboard">
             <Button variant="outline">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
           </Link>
+          
+          <div className="flex gap-2">
+            <Button
+              variant={showAIAssistant ? "default" : "outline"}
+              onClick={() => setShowAIAssistant(!showAIAssistant)}
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Assistant
+            </Button>
+            <Button
+              variant={showMathKeyboard ? "default" : "outline"}
+              onClick={() => setShowMathKeyboard(!showMathKeyboard)}
+            >
+              <Keyboard className="w-4 h-4 mr-2" />
+              Math Keyboard
+            </Button>
+          </div>
         </div>
 
-        <Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <Card>
           <CardHeader>
             <CardTitle className="text-3xl">Create New Quiz</CardTitle>
           </CardHeader>
@@ -327,13 +403,25 @@ export default function CreateQuizPage() {
                           )}
                         </div>
 
-                        <Input
-                          value={question.question_text}
-                          onChange={(e) =>
-                            updateQuestion(qIndex, e.target.value)
-                          }
-                          placeholder="Enter your question"
-                        />
+                        <div>
+                          <Input
+                            value={question.question_text}
+                            onChange={(e) =>
+                              updateQuestion(qIndex, e.target.value)
+                            }
+                            onFocus={() => handleInputFocus("question", qIndex)}
+                            placeholder="Enter your question (use $ for math: $x^2$)"
+                          />
+                          {/* Math Preview */}
+                          {question.question_text && question.question_text.includes('$') && (
+                            <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                              <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">Preview:</p>
+                              <div className="text-base">
+                                <MathText text={question.question_text} />
+                              </div>
+                            </div>
+                          )}
+                        </div>
 
                         {/* Choices */}
                         <div className="space-y-3 mt-4 pl-4">
@@ -354,8 +442,9 @@ export default function CreateQuizPage() {
                           {question.choices.map((choice, cIndex) => (
                             <div
                               key={cIndex}
-                              className="flex items-center gap-2"
+                              className="space-y-2"
                             >
+                              <div className="flex items-center gap-2">
                               <input
                                 type="radio"
                                 name={`correct-${qIndex}`}
@@ -370,7 +459,8 @@ export default function CreateQuizPage() {
                                 onChange={(e) =>
                                   updateChoice(qIndex, cIndex, e.target.value)
                                 }
-                                placeholder={`Choice ${cIndex + 1}`}
+                                onFocus={() => handleInputFocus("choice", qIndex, cIndex)}
+                                placeholder={`Choice ${cIndex + 1} (use $ for math)`}
                                 className="flex-1"
                               />
                               {question.choices.length > 2 && (
@@ -381,6 +471,16 @@ export default function CreateQuizPage() {
                                 >
                                   <Trash2 className="w-4 h-4 text-red-500" />
                                 </Button>
+                              )}
+                              </div>
+                              {/* Math Preview for Choice */}
+                              {choice.choice_text && choice.choice_text.includes('$') && (
+                                <div className="ml-8 p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+                                  <p className="text-xs text-gray-500 mb-1">Preview:</p>
+                                  <div className="text-sm">
+                                    <MathText text={choice.choice_text} />
+                                  </div>
+                                </div>
                               )}
                             </div>
                           ))}
@@ -410,6 +510,30 @@ export default function CreateQuizPage() {
             </div>
           </CardContent>
         </Card>
+          </div>
+
+          {/* Sidebar for AI Assistant and Math Keyboard */}
+          <div className="space-y-6">
+            {showAIAssistant && (
+              <AIAssistant onQuestionsGenerated={handleAIQuestionsGenerated} />
+            )}
+            {showMathKeyboard && (
+              <MathKeyboard onInsert={handleMathInsert} />
+            )}
+            
+            {!showAIAssistant && !showMathKeyboard && (
+              <Card className="border-dashed">
+                <CardContent className="pt-6 text-center text-gray-500">
+                  <p className="mb-4">Select a tool from above to get started</p>
+                  <div className="space-y-2 text-sm text-left">
+                    <p>✨ <strong>AI Assistant:</strong> Generate quiz questions automatically</p>
+                    <p>⌨️ <strong>Math Keyboard:</strong> Insert mathematical symbols and equations</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
