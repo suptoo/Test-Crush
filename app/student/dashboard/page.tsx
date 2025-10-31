@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { BookOpen, LogOut, Search, Trophy, TrendingUp } from "lucide-react";
+import { BookOpen, LogOut, Search, Trophy, TrendingUp, Brain, Wrench } from "lucide-react";
 import { formatDate, calculatePercentage } from "@/lib/utils";
 
 interface AttemptWithQuiz extends Attempt {
@@ -208,6 +208,47 @@ export default function StudentDashboard() {
                     )
                   : 0}
                 %
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Access Tools */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105 border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20"
+            onClick={() => router.push('/student/focus')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
+                  <Brain className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg mb-1">Focus Studio</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Brain-enhancing music for concentration
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20"
+            onClick={() => router.push('/student/tools')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
+                  <Wrench className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg mb-1">Student Toolkit</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    12+ productivity tools & converters
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
